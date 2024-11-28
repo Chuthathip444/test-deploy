@@ -1,8 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-//const cors = require('cors');
-const mysql = require('mysql2/promise'); // ใช้สำหรับเชื่อมต่อฐานข้อมูล
+const cors = require('cors');
+const pool = require('./db'); // เรียกใช้งาน connection pool
 
 require('dotenv').config();
 
@@ -14,35 +14,32 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(express.json());
 
-const cors = require('cors');
+// ตั้งค่า CORS
 const corsConfig = {
-  origin:"*",
+  origin: '*',
   credential: true,
-  methods:["GET","POST","PUT","DELETE"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
-app.options(" ", cors(corsConfig));
+app.options('*', cors(corsConfig));
 app.use(cors(corsConfig));
 
-// สร้าง connection pool สำหรับเชื่อมต่อฐานข้อมูล
-const connection = mysql.createPool(process.env.DATABASE_URL);
-
-// GET: ดึงข้อมูลทั้งหมดจากฐานข้อมูล
+// GET: ดึงข้อมูลจากฐานข้อมูล (ตัวอย่าง table admin)
 app.get('/api/v1/admin', async (req, res, next) => {
   try {
-    const [rows] = await connection.query('SELECT * FROM admin'); // เปลี่ยน your_table_name เป็นชื่อ table ของคุณ
-    res.json(rows); // ส่งผลลัพธ์ในรูป JSON
+    const [rows] = await pool.query('SELECT * FROM admin');
+    res.json(rows);
   } catch (error) {
     next(error); // ส่งต่อข้อผิดพลาดให้ middleware จัดการ
   }
 });
 
-// GET: ดึงข้อมูลทั้งหมดจากฐานข้อมูล
+// GET: ดึงข้อมูลจากฐานข้อมูล (ตัวอย่าง table newreserch)
 app.get('/api/v1/newreserch', async (req, res, next) => {
   try {
-    const [rows] = await connection.query('SELECT * FROM newreserch'); // เปลี่ยน your_table_name เป็นชื่อ table ของคุณ
-    res.json(rows); // ส่งผลลัพธ์ในรูป JSON
+    const [rows] = await pool.query('SELECT * FROM newreserch');
+    res.json(rows);
   } catch (error) {
-    next(error); // ส่งต่อข้อผิดพลาดให้ middleware จัดการ
+    next(error);
   }
 });
 
@@ -53,7 +50,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1', api);
-
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 
