@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const cors = require('cors');
+//const cors = require('cors');
 const mysql = require('mysql2/promise'); // ใช้สำหรับเชื่อมต่อฐานข้อมูล
 
 require('dotenv').config();
@@ -13,6 +13,15 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(express.json());
+
+const cors = require('cors');
+const corsConfig = {
+  origin:"*",
+  credential: true,
+  methods:["GET","POST","PUT","DELETE"],
+};
+app.options("", cors(corsConfig));
+app.use(cors(corsConfig));
 
 // สร้าง connection pool สำหรับเชื่อมต่อฐานข้อมูล
 const connection = mysql.createPool(process.env.DATABASE_URL);
