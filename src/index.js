@@ -27,7 +27,7 @@ async function testDatabaseConnection() {
 
 // เริ่มต้นแอปพลิเคชันหลังจากการทดสอบฐานข้อมูลสำเร็จ
 testDatabaseConnection().then(() => {
-  const port = process.env.PORT || 5000;
+  const port = process.env.PORT || 4000;
   app.listen(port, () => {
     console.log(`Listening: http://localhost:${port}`);
   });
