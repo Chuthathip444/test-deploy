@@ -19,9 +19,19 @@ app.use(express.json());
 const connection = mysql.createPool(process.env.DATABASE_URL);
 
 // GET: ดึงข้อมูลทั้งหมดจากฐานข้อมูล
-app.get('/api/v1/data', async (req, res, next) => {
+app.get('/api/v1/admin', async (req, res, next) => {
   try {
     const [rows] = await connection.query('SELECT * FROM admin'); // เปลี่ยน your_table_name เป็นชื่อ table ของคุณ
+    res.json(rows); // ส่งผลลัพธ์ในรูป JSON
+  } catch (error) {
+    next(error); // ส่งต่อข้อผิดพลาดให้ middleware จัดการ
+  }
+});
+
+// GET: ดึงข้อมูลทั้งหมดจากฐานข้อมูล
+app.get('/api/v1/newreserch', async (req, res, next) => {
+  try {
+    const [rows] = await connection.query('SELECT * FROM newreserch'); // เปลี่ยน your_table_name เป็นชื่อ table ของคุณ
     res.json(rows); // ส่งผลลัพธ์ในรูป JSON
   } catch (error) {
     next(error); // ส่งต่อข้อผิดพลาดให้ middleware จัดการ
