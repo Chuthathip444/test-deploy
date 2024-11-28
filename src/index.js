@@ -1,6 +1,14 @@
 const app = require('./app');
 require('dotenv').config(); // โหลดค่าจาก .env
 const mysql = require('mysql2/promise'); // ใช้สำหรับเชื่อมต่อฐานข้อมูล
+const cors = require('cors');
+const corsConfig = {
+  origin:"*",
+  credential: true,
+  methods:["GET","POST","PUT","DELETE"],
+};
+app.options(" ", cors(corsConfig));
+app.use(cors(corsConfig));
 
 
 const connection = mysql.createPool(process.env.DATABASE_URL);
