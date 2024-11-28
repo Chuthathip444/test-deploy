@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const mysql = require('mysql2/promise'); // ใช้สำหรับเชื่อมต่อฐานข้อมูล
 
 require('dotenv').config();
 
@@ -9,11 +10,23 @@ const middlewares = require('./middlewares');
 const api = require('./api');
 
 const app = express();
-
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
+// สร้าง connection pool สำหรับเชื่อมต่อฐานข้อมูล
+const connection = mysql.createPool(process.env.DATABASE_URL);
+
+// GET: ดึงข้อมูลทั้งหมดจากฐานข้อมูล
+app.get('/api/v1/data', async (req, res, next) => {
+  try {
+    const [rows] = await connection.query('SELECT * FROM admin'); // เปลี่ยน your_table_name เป็นชื่อ table ของคุณ
+    res.json(rows); // ส่งผลลัพธ์ในรูป JSON
+  } catch (error) {
+    next(error); // ส่งต่อข้อผิดพลาดให้ middleware จัดการ
+  }
+});
 
 app.get('/', (req, res) => {
   res.json({
