@@ -1,8 +1,15 @@
 const app = require('./app');
 require('dotenv').config(); // โหลดค่าจาก .env
 const mysql = require('mysql2/promise'); // ใช้สำหรับเชื่อมต่อฐานข้อมูล
+const cors = require('cors');
+const corsConfig = {
+  origin:"*",
+  credential: true,
+  methods:["GET","POST","PUT","DELETE"],
+};
+app.options("", cors(corsConfig));
+app.use(cors(corsConfig));
 
-// สร้าง connection pool เพื่อเพิ่มประสิทธิภาพ
 const connection = mysql.createPool(process.env.DATABASE_URL);
 
 // ทดสอบการเชื่อมต่อฐานข้อมูล
@@ -10,10 +17,10 @@ async function testDatabaseConnection() {
   try {
     const conn = await connection.getConnection();
     console.log('✅ Successfully');
-    conn.release(); // ปล่อยการเชื่อมต่อกลับไปที่ pool
+    conn.release(); 
   } catch (error) {
     console.error('❌ Failed', error.message);
-    process.exit(1); // หยุดโปรแกรมหากการเชื่อมต่อล้มเหลว
+    process.exit(1); 
   }
 }
 

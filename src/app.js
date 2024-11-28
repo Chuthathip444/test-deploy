@@ -14,12 +14,6 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(express.json());
 
-const corsConfig = {
-  origin:"*",
-  credential: true,
-  methods:["GET","POST","PUT","DELETE"],};
-app.options("", cors(corsConfig));
-app.use(cors(corsConfig));
 // สร้าง connection pool สำหรับเชื่อมต่อฐานข้อมูล
 const connection = mysql.createPool(process.env.DATABASE_URL);
 
