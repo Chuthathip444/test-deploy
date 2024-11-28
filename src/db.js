@@ -16,9 +16,9 @@ let pool;
       },
     });
 
-    console.log('Database connection pool created successfully!');
+    console.log('✅ Successfully!');
   } catch (error) {
-    console.error('Failed to create database connection pool:', error.message);
+    console.error('❌ Failed ', error.message);
     process.exit(1); // หยุดการทำงานหากการเชื่อมต่อล้มเหลว
   }
 })();
